@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm neutral light mode */
+    --background: 30 13% 97%;       /* warm cream #F8F6F3 */
+    --foreground: 20 10% 10%;       /* warm near-black #1C1917 */
+
+    --card: 0 0% 100%;              /* pure white */
+    --card-foreground: 20 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 10% 10%;
+
+    --primary: 17 85% 60%;          /* coral-orange #f07443 — only accent */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 30 8% 93%;         /* warm light gray */
+    --secondary-foreground: 20 10% 10%;
+
+    --muted: 30 8% 93%;
+    --muted-foreground: 20 8% 48%;  /* warm medium gray */
+
+    --accent: 17 85% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 8% 88%;            /* very subtle warm border */
+    --input: 30 8% 88%;
+    --ring: 17 85% 60%;
+
+    --radius: 0.625rem;
+
+    --shadow-soft:   0 1px 2px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.04);
+    --shadow-medium: 0 4px 16px rgba(28,25,23,0.07), 0 1px 3px rgba(28,25,23,0.04);
+    --shadow-strong: 0 8px 32px rgba(28,25,23,0.10);
+  }
+
+  .dark {
+    /* Warm dark mode — not cold blue-dark */
+    --background: 24 14% 8%;        /* warm near-black #141210 */
+    --foreground: 30 13% 95%;       /* warm off-white #F5F3EF */
+
+    --card: 30 10% 11%;             /* warm dark card #1E1C19 */
+    --card-foreground: 30 13% 95%;
+
+    --popover: 30 10% 11%;
+    --popover-foreground: 30 13% 95%;
+
+    --primary: 17 85% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 30 8% 16%;
+    --secondary-foreground: 30 13% 95%;
+
+    --muted: 30 8% 15%;
+    --muted-foreground: 30 8% 55%;
+
+    --accent: 17 85% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 8% 18%;
+    --input: 30 8% 18%;
+    --ring: 17 85% 60%;
+
+    --shadow-soft:   0 1px 2px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15);
+    --shadow-medium: 0 4px 16px rgba(0,0,0,0.25);
+    --shadow-strong: 0 8px 32px rgba(0,0,0,0.35);
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    transition: background-color 300ms ease, color 300ms ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+}
+
+@layer utilities {
+  .shadow-soft   { box-shadow: var(--shadow-soft); }
+  .shadow-medium { box-shadow: var(--shadow-medium); }
+  .shadow-strong { box-shadow: var(--shadow-strong); }
+
+  /* Nav blur */
+  .nav-blur {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Subtle animated underline on links */
+  .hover-underline { position: relative; }
+  .hover-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 0; height: 1px;
+    background: currentColor;
+    transition: width 250ms ease;
+  }
+  .hover-underline:hover::after { width: 100%; }
+
+  /* Card hover — gentle lift only */
+  .card-hover {
+    transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 250ms ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  /* Marquee */
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .animate-ticker { animation: ticker 40s linear infinite; }
+
+  /* Float animations */
+  @keyframes floatA {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-10px) rotate(1deg); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-7px); }
+  }
+  @keyframes floatC {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-12px) rotate(-1deg); }
+  }
+  .animate-float-a { animation: floatA 6s ease-in-out infinite; }
+  .animate-float-b { animation: floatB 5s ease-in-out infinite; }
+  .animate-float-c { animation: floatC 7s ease-in-out infinite; }
+
+  /* Pulse dot */
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.85); }
+  }
+  .animate-pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+}

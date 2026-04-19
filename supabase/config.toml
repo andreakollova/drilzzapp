@@ -1,0 +1,10 @@
+project_id = "vwvixcqqgbdjrslogfmk"
+
+[functions.send-weekly-digest]
+verify_jwt = false
+
+[functions.generate-drill-diagram]
+verify_jwt = false
+
+[functions.generate-seed-images]
+verify_jwt = false
