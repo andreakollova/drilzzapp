@@ -18,70 +18,47 @@ serve(async (req) => {
       throw new Error("GOOGLE_AI_API_KEY is not configured");
     }
 
-    // Field/court templates description based on sport
-    const sportTemplates: Record<string, string> = {
-      "Field Hockey": "field hockey pitch with proper dimensions, goal areas, and marking lines",
-      "Football / Soccer": "soccer field with goals, penalty areas, center circle, and proper pitch markings",
-      "Basketball": "basketball court with three-point line, free throw line, and proper court markings",
-      "Volleyball": "volleyball court with net, attack lines, and proper court dimensions",
-      "Floorball": "floorball rink with goals, corner areas, and proper court markings",
-      "Tennis": "tennis court with net, service boxes, and proper court lines",
-      "Ice Hockey": "ice hockey rink with goals, blue lines, face-off circles, and proper markings",
-      "Rugby": "rugby field with try lines, goal posts, and proper field markings",
-      "Handball": "handball court with goals, goal area, and proper court markings",
-      "General Conditioning / Fitness": "training area with equipment zones and exercise stations"
-    };
+    const prompt = `You are a precise sports drill diagram renderer. Your job is to redraw the hand-drawn drill diagram from the image into a clean, minimal vector-style diagram.
 
-    const template = sportTemplates[sport] || "sports training area";
+━━━ STEP 1: ANALYZE THE IMAGE ━━━
+Before drawing anything, carefully identify and count every element:
+- Circles (○) = players. Count them. Note any numbers inside. Note exact positions.
+- X marks (×) = defenders. Count them. Note exact positions.
+- Triangles (△) = cones. Count them. Note exact positions.
+- Solid arrows (→) = running paths. Count them. Note START point, END point, and DIRECTION precisely.
+- Dashed arrows (- - →) = passes. Count them. Note direction.
+- Wavy lines (~~~→) = dribble paths. Count them. Note direction.
+- Bold arrows = shots on goal. Count them. Note direction.
+- Rectangles (□) = goals or zones. Count them. Note position and size.
+- Any numbers or letters. Note them and their positions.
 
-    // Drilzz branding specifications
-    const brandingSpec = `
-DRILZZ BRANDING — APPLY EXACTLY:
+━━━ STEP 2: REDRAW — STRICT RULES ━━━
+1. Draw EXACTLY the number of elements you counted. Not one more, not one less.
+2. Place every element in its EXACT relative position — same layout, same spacing.
+3. Every arrow must point in the EXACT same direction as in the original.
+4. DO NOT add any element not in the original drawing.
+5. DO NOT remove any element from the original drawing.
+6. DO NOT move, rotate, or mirror any element.
+7. DO NOT add a field, pitch, court, grass, floor texture, or any background other than pure white.
 
-COLORS (use only these):
-- Background: Pure white (#FFFFFF) always — no exceptions
-- Primary accent: Coral orange (#F6824D)
-- Dark: Charcoal (#272B35)
-- All lines, arrows, outlines: coral orange (#F6824D)
-- All filled shapes: coral orange (#F6824D) fill or charcoal (#272B35) fill
-- Text/numbers: charcoal (#272B35)
+━━━ COLORS — EXACT ━━━
+- Canvas background: pure white #FFFFFF (nothing else, ever)
+- Circles (players): white fill, coral orange #F6824D border 2px, numbers in charcoal #272B35
+- X marks (defenders): charcoal #272B35
+- Triangles (cones): coral orange #F6824D filled
+- All arrows and lines: coral orange #F6824D, 2-3px stroke
+- Dashed lines: coral orange #F6824D dashed
+- Rectangles (goals/zones): charcoal #272B35 outline, no fill
+- All text/numbers: charcoal #272B35
 
-NOTATION STYLE:
-- Players: Numbered circles, white fill, coral orange (#F6824D) outline stroke (2px)
-- Running arrows: solid coral orange arrows
-- Passing lines: dashed coral orange lines with arrowhead
-- Dribble: wavy coral orange line
-- Shot: bold coral orange arrow
-- Cones: small coral orange filled triangles
-- Goals/zones: charcoal (#272B35) rectangle outline
-- Ball: small coral orange filled circle
+━━━ GOAL ━━━
+- Always include one goal rectangle (charcoal #272B35 outline, no fill) at the top-center of the canvas, even if not drawn in the original. This represents the target goal for the drill.
 
-STYLE: flat, clean, minimal, no shadows, no gradients, no green pitch, white background only.
-`;
+━━━ CANVAS & CROP ━━━
+- Output a tightly cropped image — include only the drawn elements plus ~40px white margin around them.
+- No empty white space beyond that margin.
+- Style: flat, clean, minimal. No shadows, no gradients, no 3D effects.`;
 
-    const prompt = `You are a diagram tracer, not a diagram designer. Your ONLY job is to trace exactly what is drawn in the image and redraw it cleanly.
-
-ABSOLUTE RULES — ZERO EXCEPTIONS:
-1. COUNT every element in the image. Draw EXACTLY that many — no more, no less.
-2. TRACE every line, arrow, circle, shape in its EXACT position on the canvas.
-3. COPY every arrow direction EXACTLY as drawn — never rotate, flip or redirect.
-4. COPY every element's size and spacing EXACTLY as in the original.
-5. DO NOT add any element that is not in the original.
-6. DO NOT remove any element that IS in the original.
-7. DO NOT move any element from its original position.
-8. DO NOT interpret what the drill means. You are a copy machine, not a coach.
-9. White background ONLY — no pitch, no field, no green, no texture, nothing.
-
-STYLE (apply to the traced elements):
-- Background: white (#FFFFFF)
-- All lines, arrows: coral orange (#F6824D), 2-3px stroke
-- Circles (players): white fill, coral orange (#F6824D) 2px outline
-- Numbers inside circles: charcoal (#272B35)
-- Dashed lines: coral orange (#F6824D) dashed
-- Triangles/cones: coral orange (#F6824D) filled
-- Rectangles/goals: charcoal (#272B35) outline
-
-Think of it this way: if the original has 2 circles and 1 arrow going RIGHT, your output must have exactly 2 circles and exactly 1 arrow going RIGHT. Nothing else.`;
 
     console.log("Calling Google AI for image redraw...");
 
