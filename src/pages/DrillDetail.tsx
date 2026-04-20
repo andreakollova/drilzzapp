@@ -398,7 +398,7 @@ const DrillDetail = () => {
           <div className="flex items-center gap-2">
             {!user && (
               <Link to="/register">
-                <Button size="sm" className="gradient-hero">
+                <Button size="sm" className="">
                   Sign Up
                 </Button>
               </Link>
@@ -620,7 +620,7 @@ const DrillDetail = () => {
                 <p className="text-sm text-muted-foreground">Join Drilzz to rate and save drills</p>
               </div>
               <Link to="/register">
-                <Button className="gradient-hero">
+                <Button className="">
                   Sign Up
                 </Button>
               </Link>
@@ -640,7 +640,7 @@ const DrillDetail = () => {
               </p>
               <div className="flex items-center justify-center gap-3">
                 <Link to="/register">
-                  <Button size="lg" className="gradient-hero">
+                  <Button size="lg" className="">
                     Create Free Account
                   </Button>
                 </Link>

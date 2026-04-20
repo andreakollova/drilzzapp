@@ -356,7 +356,7 @@ export default function Library() {
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="sm" className="gradient-hero">
+                <Button size="sm">
                   <Plus className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -431,7 +431,7 @@ export default function Library() {
                   </Button>
                 ) : (
                   <Link to="/create">
-                    <Button size="sm" className="gradient-hero">
+                    <Button size="sm">
                       <Plus className="w-4 h-4 mr-2" />
                       Create Drill
                     </Button>
@@ -490,7 +490,7 @@ export default function Library() {
                 </div>
                 <p className="text-muted-foreground mb-4">No training sessions yet</p>
                 <Link to="/sessions/create">
-                  <Button size="sm" className="gradient-hero">
+                  <Button size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Create Session
                   </Button>

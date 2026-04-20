@@ -611,7 +611,7 @@ export default function SessionBuilder() {
           <Button variant="outline" onClick={() => navigate("/library")}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={saving} className="gradient-hero">
+          <Button onClick={handleSave} disabled={saving} className="">
             <Save className="w-4 h-4 mr-2" />
             {saving ? "Saving..." : id ? "Update Session" : "Create Session"}
           </Button>

@@ -68,7 +68,7 @@ export const AddCustomActivityDialog = ({ open, onOpenChange, onAdd }: AddCustom
           <Button 
             onClick={handleAdd} 
             disabled={!activityName.trim() || !duration}
-            className="gradient-hero"
+            className=""
           >
             Add Activity
           </Button>

@@ -818,7 +818,7 @@ const EditDrill = () => {
             <div className="hidden md:flex items-center gap-4 pt-4 border-t border-border">
               <Button
                 type="submit"
-                className="gradient-hero flex-1 h-11"
+                className="flex-1 h-11"
                 disabled={loading}
               >
                 <Save className="w-4 h-4 mr-2" />
@@ -841,7 +841,7 @@ const EditDrill = () => {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
         <Button
           onClick={handleSubmit as any}
-          className="gradient-hero w-full h-11"
+          className="w-full h-11"
           disabled={loading}
         >
           <Save className="w-4 h-4 mr-2" />

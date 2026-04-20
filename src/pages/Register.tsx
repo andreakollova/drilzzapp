@@ -456,7 +456,7 @@ const Register = () => {
 
               <Button 
                 type="submit" 
-                className="w-full gradient-hero text-lg h-12" 
+                className="w-full text-lg h-12" 
                 disabled={form.formState.isSubmitting}
               >
                 {form.formState.isSubmitting ? "Creating Account..." : "Create Account"}
