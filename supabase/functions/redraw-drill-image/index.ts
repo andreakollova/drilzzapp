@@ -36,30 +36,27 @@ serve(async (req) => {
 
     // Drilzz branding specifications
     const brandingSpec = `
-DRILZZ BRANDING REQUIREMENTS (MUST FOLLOW EXACTLY):
+DRILZZ BRANDING — APPLY EXACTLY:
 
-BACKGROUND & FIELD/COURT:
-- Background: Pure white (#FFFFFF) - clean coach's whiteboard aesthetic
-- Field/court lines: Gradient from hot pink (#E90044) to deep blue (#3635B5)
-- Line weight: 2-3px for major boundary lines, 1-2px for minor lines
-- Template: ${template}
+COLORS (use only these):
+- Background: Pure white (#FFFFFF) always — no exceptions
+- Primary accent: Coral orange (#F6824D)
+- Dark: Charcoal (#272B35)
+- All lines, arrows, outlines: coral orange (#F6824D)
+- All filled shapes: coral orange (#F6824D) fill or charcoal (#272B35) fill
+- Text/numbers: charcoal (#272B35)
 
-COACHING NOTATION SYSTEM (USE EXACTLY THESE STYLES):
-- Players: Numbered circles (1, 2, 3, etc.) with white fill and gradient outline stroke (hot pink to blue)
-- Running paths: Solid gradient arrows (hot pink → blue) showing movement direction
-- Passing lines: Dashed gradient lines with arrowheads at the end
-- Dribbling: Wavy gradient lines
-- Cones/markers: Small triangles with gradient fill (hot pink → blue)
-- Goals/targets: Rectangle outlines with gradient stroke
-- Ball position: Small filled circle with gradient fill
+NOTATION STYLE:
+- Players: Numbered circles, white fill, coral orange (#F6824D) outline stroke (2px)
+- Running arrows: solid coral orange arrows
+- Passing lines: dashed coral orange lines with arrowhead
+- Dribble: wavy coral orange line
+- Shot: bold coral orange arrow
+- Cones: small coral orange filled triangles
+- Goals/zones: charcoal (#272B35) rectangle outline
+- Ball: small coral orange filled circle
 
-STYLE REQUIREMENTS:
-- Clean, minimal, professional coaching diagram aesthetic
-- High contrast for clarity
-- Consistent gradient direction (hot pink at top/left, blue at bottom/right)
-- Numbers and text in dark gray or black for readability
-- No shadows, no 3D effects, flat design
-- White background throughout (no green pitches or colored surfaces)
+STYLE: flat, clean, minimal, no shadows, no gradients, no green pitch, white background only.
 `;
 
     const prompt = `${brandingSpec}
