@@ -44,7 +44,7 @@ Before drawing anything, carefully identify and count every element:
 ━━━ COLORS — EXACT ━━━
 - Canvas background: pure white #FFFFFF (nothing else, ever)
 - Circles (players): white fill, coral orange #F6824D border 2px, numbers in charcoal #272B35
-- X marks (defenders): coral orange #F6824D — NEVER black, NEVER charcoal
+- X marks (defenders): coral orange #F6824D — NEVER black, NEVER charcoal. Draw them slightly smaller than player circles.
 - Triangles (cones): charcoal #272B35 filled — always dark/black
 - All arrows and lines: coral orange #F6824D, 2-3px stroke
 - Dashed lines: coral orange #F6824D dashed
