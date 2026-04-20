@@ -659,7 +659,7 @@ const CreateDrill = () => {
                               <Info className="w-4 h-4" />
                             </button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-72 text-sm" side="right">
+                          <PopoverContent className="w-72 text-sm" side="bottom" align="start" avoidCollisions={true}>
                             <p className="font-semibold mb-2">Drawing Legend</p>
                             <ul className="space-y-1.5 text-muted-foreground">
                               <li><span className="font-medium text-foreground">○ Circle</span> — Player / attacker</li>
