@@ -79,7 +79,11 @@
 @layer base {
   * { @apply border-border; }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
 
   body {
     @apply bg-background text-foreground antialiased;
@@ -87,6 +91,17 @@
     font-size: 14px;
     line-height: 1.6;
     transition: background-color 300ms ease, color 300ms ease;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Prevent iOS zoom on input focus without changing desktop font sizes */
+  @media (max-width: 768px) {
+    input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
