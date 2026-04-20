@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Upload, Save, Sparkles, Video, Clock, Play, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 
@@ -45,6 +46,8 @@ const CreateDrill = () => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [aiRedrawing, setAiRedrawing] = useState(false);
+  const [hasBeenRedrawn, setHasBeenRedrawn] = useState(false);
+  const [showRedrawPrompt, setShowRedrawPrompt] = useState(false);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
   
@@ -232,6 +235,7 @@ const CreateDrill = () => {
         const croppedFile = new File([blob], file.name, { type: "image/png" });
         setImageFile(croppedFile);
         setImagePreview(dataUrl);
+        setHasBeenRedrawn(false);
       };
       reader.readAsDataURL(file);
     }
@@ -279,7 +283,8 @@ const CreateDrill = () => {
         const file = new File([blob], "ai-redrawn-drill.png", { type: "image/png" });
         setImageFile(file);
         setImagePreview(dataUrl);
-        
+        setHasBeenRedrawn(true);
+
         toast({
           title: "AI Redraw Complete!",
           description: "Your drill has been transformed into a professional diagram"
@@ -309,6 +314,16 @@ const CreateDrill = () => {
       return;
     }
 
+    // If image uploaded but not redrawn, ask user first
+    if (imagePreview && !hasBeenRedrawn) {
+      setShowRedrawPrompt(true);
+      return;
+    }
+
+    await doSave();
+  };
+
+  const doSave = async () => {
     if (!user || !profile) return;
 
     setLoading(true);
@@ -397,6 +412,13 @@ const CreateDrill = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRedrawThenSave = async () => {
+    setShowRedrawPrompt(false);
+    await handleAiRedraw();
+    // hasBeenRedrawn is set inside handleAiRedraw on success; doSave after
+    await doSave();
   };
 
   if (!profile) return null;
@@ -902,6 +924,27 @@ const CreateDrill = () => {
           {loading ? "Saving..." : "Save Drill"}
         </Button>
       </div>
+
+      {/* AI Redraw prompt before save */}
+      <AlertDialog open={showRedrawPrompt} onOpenChange={setShowRedrawPrompt}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>AI Redraw your diagram?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your diagram hasn't been AI redrawn yet. Do you want to redraw it into a clean professional diagram before saving?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setShowRedrawPrompt(false); doSave(); }}>
+              Save without redraw
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleRedrawThenSave}>
+              <Sparkles className="w-4 h-4 mr-2" />
+              Redraw first
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
