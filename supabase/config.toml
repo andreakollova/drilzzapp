@@ -1,5 +1,8 @@
 project_id = "ainummdzzisrhutrvsrb"
 
+[functions.redraw-drill-image]
+verify_jwt = false
+
 [functions.send-weekly-digest]
 verify_jwt = false
 
