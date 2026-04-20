@@ -28,7 +28,7 @@ Before drawing anything, carefully identify and count every element:
 - Solid arrows (→) = running paths. Count them. Note START point, END point, and DIRECTION precisely.
 - Dashed arrows (- - →) = passes. Count them. Note direction.
 - Wavy lines (~~~→) = dribble paths. Count them. Note direction.
-- Bold arrows = shots on goal. Count them. Note direction.
+- Double lines / bold double arrows (⚡) = shots on goal. Count them. These ALWAYS point straight up toward the goal — regardless of how they appear drawn.
 - Rectangles (□) = goals or zones. Count them. Note position and size.
 - Any numbers or letters. Note them and their positions.
 
@@ -44,10 +44,11 @@ Before drawing anything, carefully identify and count every element:
 ━━━ COLORS — EXACT ━━━
 - Canvas background: pure white #FFFFFF (nothing else, ever)
 - Circles (players): white fill, coral orange #F6824D border 2px, numbers in charcoal #272B35
-- X marks (defenders): charcoal #272B35
-- Triangles (cones): coral orange #F6824D filled
+- X marks (defenders): coral orange #F6824D — NEVER black, NEVER charcoal
+- Triangles (cones): charcoal #272B35 filled — always dark/black
 - All arrows and lines: coral orange #F6824D, 2-3px stroke
 - Dashed lines: coral orange #F6824D dashed
+- Double lines / shot arrows (⚡ or bold double arrow): coral orange #F6824D, ALWAYS pointing straight toward the goal at the top — never sideways, never diagonal
 - Rectangles (goals/zones): charcoal #272B35 outline, no fill
 - All text/numbers: charcoal #272B35
 
