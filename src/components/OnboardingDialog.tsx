@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Users, Search, Dumbbell, MessageSquare, X } from "lucide-react";
+import { Sparkles, Users, Search, Dumbbell, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -75,18 +75,21 @@ const OnboardingDialog = ({ open, onOpenChange }: OnboardingDialogProps) => {
 
   const currentStepData = steps[currentStep];
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-4 top-4"
-          onClick={handleSkip}
-        >
-          <X className="w-4 h-4" />
-        </Button>
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      // Save completion whenever dialog closes (via built-in X, Escape, etc.)
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          supabase.from("profiles").update({ onboarding_completed: true }).eq("id", user.id);
+        }
+      });
+    }
+    onOpenChange(isOpen);
+  };
 
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-md">
         <div className="flex flex-col items-center text-center py-6 space-y-4">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
             {currentStepData.icon}

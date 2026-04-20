@@ -190,7 +190,7 @@ const Profile = () => {
       <nav className="bg-card border-b border-border shadow-soft sticky top-0 z-10">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center">
-            <img src={drilzzLogo} alt="Drilzz" className="h-12" />
+            <img src={drilzzLogo} alt="Drilzz" className="h-6 md:h-7" />
           </Link>
           <button 
             onClick={() => navigate(-1)} 

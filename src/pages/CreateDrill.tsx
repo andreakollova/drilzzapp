@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Upload, Save, Sparkles, Video, Clock, Play } from "lucide-react";
+import { ArrowLeft, Upload, Save, Sparkles, Video, Clock, Play, Info } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -111,6 +112,14 @@ const CreateDrill = () => {
       .single();
     
     setProfile(profileData);
+
+    // Auto-select first category for user's sport
+    if (profileData?.sport && !duplicateData && !formData.category) {
+      const sportCats = SPORT_CATEGORIES[profileData.sport];
+      if (sportCats?.length > 0) {
+        setFormData(prev => ({ ...prev, category: sportCats[0] }));
+      }
+    }
   };
 
   const validateForm = (): boolean => {
@@ -590,7 +599,7 @@ const CreateDrill = () => {
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         placeholder="Describe the drill setup, objectives, and how to execute it..."
                         rows={5}
-                        className={errors.description ? "border-destructive" : ""}
+                        className={`placeholder:text-muted-foreground/50 ${errors.description ? "border-destructive" : ""}`}
                         disabled={loading}
                       />
                       {errors.description && (
@@ -609,7 +618,7 @@ const CreateDrill = () => {
                         onChange={(e) => setFormData({ ...formData, coachingPoints: e.target.value })}
                         placeholder="• Key technical points to emphasize&#10;• Common mistakes to correct&#10;• Progression and regression options"
                         rows={5}
-                        className={errors.coachingPoints ? "border-destructive" : ""}
+                        className={`placeholder:text-muted-foreground/50 ${errors.coachingPoints ? "border-destructive" : ""}`}
                         disabled={loading}
                       />
                       {errors.coachingPoints && (
@@ -636,13 +645,36 @@ const CreateDrill = () => {
                     <span className="w-6 h-6 rounded-full bg-muted text-muted-foreground text-sm flex items-center justify-center font-medium">
                       3
                     </span>
-                    <h2 className="font-display text-lg">Drill Diagram & Video</h2>
+                    <h2 className="font-display text-lg">Drill Drawing / Diagram & Video</h2>
                   </div>
 
                   <div className="space-y-6">
                     {/* Image Upload */}
                     <div>
-                      <Label className="mb-2 block">Drill Diagram</Label>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Label>Drill Drawing / Diagram</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
+                              <Info className="w-4 h-4" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-72 text-sm" side="right">
+                            <p className="font-semibold mb-2">Drawing Legend</p>
+                            <ul className="space-y-1.5 text-muted-foreground">
+                              <li><span className="font-medium text-foreground">○ Circle</span> — Player / attacker</li>
+                              <li><span className="font-medium text-foreground">× X mark</span> — Defender</li>
+                              <li><span className="font-medium text-foreground">△ Triangle / cone</span> — Cone / marker</li>
+                              <li><span className="font-medium text-foreground">→ Solid arrow</span> — Running path</li>
+                              <li><span className="font-medium text-foreground">--→ Dashed arrow</span> — Pass / ball path</li>
+                              <li><span className="font-medium text-foreground">~~→ Wavy arrow</span> — Dribble</li>
+                              <li><span className="font-medium text-foreground">⚡ Lightning arrow</span> — Shot on goal</li>
+                              <li><span className="font-medium text-foreground">□ Rectangle</span> — Goal / zone</li>
+                            </ul>
+                            <p className="mt-3 text-xs text-muted-foreground">Upload your hand-drawn sketch and AI will convert it into a clean, unified graphic.</p>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                       <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 hover:bg-muted/30 transition-all duration-200">
                         {imagePreview ? (
                           <div className="space-y-4">
