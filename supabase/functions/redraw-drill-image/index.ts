@@ -64,18 +64,24 @@ STYLE REQUIREMENTS:
 
     const prompt = `${brandingSpec}
 
-Transform this hand-drawn drill diagram into a clean, professional ${sport} coaching diagram following the exact Drilzz branding specifications above.
+You are a precise diagram converter. Your task is to EXACTLY reproduce the hand-drawn drill diagram with clean graphics.
 
-Analyze the hand-drawn elements in the uploaded image:
-- Player positions (dots/circles) → Convert to numbered circles with gradient outline
-- Movement paths (arrows) → Convert to solid gradient arrows
-- Passing lines → Convert to dashed gradient lines
-- Equipment (cones/goals) → Convert to gradient triangles/rectangles
-- Any other coaching marks → Apply consistent Drilzz notation style
+CRITICAL RULES — DO NOT BREAK THESE:
+- Copy EVERY element from the original drawing. Do not add, remove, or move anything.
+- Keep EXACT positions, directions, and spatial relationships as drawn.
+- If there is 1 circle, draw exactly 1 circle. If there are 3 arrows, draw exactly 3 arrows.
+- Arrow directions must match EXACTLY — do not change or reverse any direction.
+- Do NOT interpret or "improve" the drill tactically. Just clean it up visually.
+- Do NOT add a pitch/field background. White background only.
 
-Recreate the drill on a white background with gradient-lined ${template}.
-Keep the same drill setup and movements from the original but apply Drilzz branding consistently.
-Output a professional, publication-ready coaching diagram.`;
+Conversion rules:
+- Hand-drawn circles → numbered gradient-outline circles (players)
+- Hand-drawn arrows → solid gradient arrows (same direction as original)
+- Hand-drawn dashed lines → dashed gradient lines (same direction)
+- Hand-drawn triangles/dots → gradient cones
+- Hand-drawn rectangles → gradient goal outlines
+
+Output: pixel-perfect clean version of the exact same diagram, same layout, same elements, same directions.`;
 
     console.log("Calling Google AI for image redraw...");
 
