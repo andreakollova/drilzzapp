@@ -153,6 +153,26 @@ const AccountSettings = () => {
     }
   };
 
+  const compressAvatar = (file: File): Promise<Blob> =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const MAX = 400;
+        let { width, height } = img;
+        if (width > height) { height = Math.round((height / width) * MAX); width = MAX; }
+        else { width = Math.round((width / height) * MAX); height = MAX; }
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("Compression failed")), "image/jpeg", 0.85);
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const file = event.target.files?.[0];
@@ -168,22 +188,13 @@ const AccountSettings = () => {
         return;
       }
 
-      // Validate file size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Please upload an image smaller than 2MB",
-          variant: "destructive",
-        });
-        return;
-      }
-
       setUploading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}/avatar.${fileExt}`;
+      // Compress & resize to max 400×400 JPEG
+      const compressed = await compressAvatar(file);
+      const fileName = `${user.id}/avatar.jpg`;
 
       // Delete old avatar if exists
       if (avatarUrl) {
@@ -196,7 +207,7 @@ const AccountSettings = () => {
       // Upload new avatar
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, compressed, { upsert: true, contentType: "image/jpeg" });
 
       if (uploadError) throw uploadError;
 
