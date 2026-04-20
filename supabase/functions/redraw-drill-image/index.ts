@@ -91,7 +91,7 @@ Output a professional, publication-ready coaching diagram.`;
     }
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GOOGLE_AI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GOOGLE_AI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -108,15 +108,9 @@ Output a professional, publication-ready coaching diagram.`;
     );
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
       const errorText = await response.text();
       console.error("Google AI error:", response.status, errorText);
-      throw new Error(`Google AI error: ${response.status}`);
+      throw new Error(`Google AI error ${response.status}: ${errorText}`);
     }
 
     const data = await response.json();
@@ -135,15 +129,11 @@ Output a professional, publication-ready coaching diagram.`;
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error("Error in redraw-drill-image:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Error in redraw-drill-image:", msg);
     return new Response(
-      JSON.stringify({ 
-        error: error instanceof Error ? error.message : "Failed to redraw image" 
-      }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
-      }
+      JSON.stringify({ error: msg }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

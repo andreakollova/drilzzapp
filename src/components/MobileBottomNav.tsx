@@ -46,7 +46,7 @@ export const MobileBottomNav = ({ userId, profile }: MobileBottomNavProps) => {
             >
               {item.isCreate ? (
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl shadow-primary/30 active:scale-95 transition-transform ring-4 ring-background">
+                  <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-xl shadow-primary/30 active:scale-95 transition-transform ring-4 ring-background">
                     <Plus className="w-6 h-6 text-primary-foreground" />
                   </div>
                 </div>

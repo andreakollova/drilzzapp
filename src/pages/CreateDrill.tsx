@@ -217,6 +217,7 @@ const CreateDrill = () => {
       });
 
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
       if (data?.imageUrl) {
         // Convert base64 to blob for storage

@@ -96,7 +96,7 @@ export function SportSelectionDialog({ open, userId, onComplete }: SportSelectio
           <Button 
             onClick={handleSubmit} 
             disabled={!sport || isLoading}
-            className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
+            className="w-full"
           >
             {isLoading ? "Saving..." : "Continue to Drilzz"}
           </Button>
