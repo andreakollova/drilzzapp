@@ -59,26 +59,29 @@ NOTATION STYLE:
 STYLE: flat, clean, minimal, no shadows, no gradients, no green pitch, white background only.
 `;
 
-    const prompt = `${brandingSpec}
+    const prompt = `You are a diagram tracer, not a diagram designer. Your ONLY job is to trace exactly what is drawn in the image and redraw it cleanly.
 
-You are a precise diagram converter. Your task is to EXACTLY reproduce the hand-drawn drill diagram with clean graphics.
+ABSOLUTE RULES — ZERO EXCEPTIONS:
+1. COUNT every element in the image. Draw EXACTLY that many — no more, no less.
+2. TRACE every line, arrow, circle, shape in its EXACT position on the canvas.
+3. COPY every arrow direction EXACTLY as drawn — never rotate, flip or redirect.
+4. COPY every element's size and spacing EXACTLY as in the original.
+5. DO NOT add any element that is not in the original.
+6. DO NOT remove any element that IS in the original.
+7. DO NOT move any element from its original position.
+8. DO NOT interpret what the drill means. You are a copy machine, not a coach.
+9. White background ONLY — no pitch, no field, no green, no texture, nothing.
 
-CRITICAL RULES — DO NOT BREAK THESE:
-- Copy EVERY element from the original drawing. Do not add, remove, or move anything.
-- Keep EXACT positions, directions, and spatial relationships as drawn.
-- If there is 1 circle, draw exactly 1 circle. If there are 3 arrows, draw exactly 3 arrows.
-- Arrow directions must match EXACTLY — do not change or reverse any direction.
-- Do NOT interpret or "improve" the drill tactically. Just clean it up visually.
-- Do NOT add a pitch/field background. White background only.
+STYLE (apply to the traced elements):
+- Background: white (#FFFFFF)
+- All lines, arrows: coral orange (#F6824D), 2-3px stroke
+- Circles (players): white fill, coral orange (#F6824D) 2px outline
+- Numbers inside circles: charcoal (#272B35)
+- Dashed lines: coral orange (#F6824D) dashed
+- Triangles/cones: coral orange (#F6824D) filled
+- Rectangles/goals: charcoal (#272B35) outline
 
-Conversion rules:
-- Hand-drawn circles → numbered gradient-outline circles (players)
-- Hand-drawn arrows → solid gradient arrows (same direction as original)
-- Hand-drawn dashed lines → dashed gradient lines (same direction)
-- Hand-drawn triangles/dots → gradient cones
-- Hand-drawn rectangles → gradient goal outlines
-
-Output: pixel-perfect clean version of the exact same diagram, same layout, same elements, same directions.`;
+Think of it this way: if the original has 2 circles and 1 arrow going RIGHT, your output must have exactly 2 circles and exactly 1 arrow going RIGHT. Nothing else.`;
 
     console.log("Calling Google AI for image redraw...");
 
@@ -105,7 +108,7 @@ Output: pixel-perfect clean version of the exact same diagram, same layout, same
               { inlineData: { mimeType, data: imageData } }
             ]
           }],
-          generationConfig: { responseModalities: ["IMAGE", "TEXT"] },
+          generationConfig: { responseModalities: ["IMAGE", "TEXT"], temperature: 0 },
         }),
       }
     );
