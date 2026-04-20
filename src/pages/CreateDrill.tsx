@@ -13,10 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 
-// Sport-specific categories
+// Sport-specific categories — keys must match sport values in SportSelectionDialog
 const SPORT_CATEGORIES: Record<string, string[]> = {
   "Field Hockey": ["Dribbling", "Passing", "Shooting", "Defense", "Goalkeeping", "Tactics", "Warm-up", "Conditioning"],
-  "Football / Soccer": ["Dribbling", "Passing", "Shooting", "Defense", "Goalkeeping", "Possession", "Tactics", "Warm-up", "Conditioning"],
+  "Football": ["Dribbling", "Passing", "Shooting", "Defense", "Goalkeeping", "Possession", "Tactics", "Warm-up", "Conditioning"],
   "Basketball": ["Dribbling", "Shooting", "Passing", "Defense", "Rebounding", "Fast Break", "Tactics", "Warm-up", "Conditioning"],
   "Volleyball": ["Serving", "Passing", "Setting", "Attacking", "Blocking", "Defense", "Tactics", "Warm-up", "Conditioning"],
   "Floorball": ["Dribbling", "Passing", "Shooting", "Defense", "Goalkeeping", "Tactics", "Warm-up", "Conditioning"],
@@ -24,8 +24,10 @@ const SPORT_CATEGORIES: Record<string, string[]> = {
   "Ice Hockey": ["Skating", "Puck Control", "Passing", "Shooting", "Defense", "Goalkeeping", "Tactics", "Warm-up", "Conditioning"],
   "Rugby": ["Passing", "Tackling", "Rucking", "Mauling", "Lineout", "Scrum", "Tactics", "Warm-up", "Conditioning"],
   "Handball": ["Dribbling", "Passing", "Shooting", "Defense", "Goalkeeping", "Fast Break", "Tactics", "Warm-up", "Conditioning"],
-  "General Conditioning / Fitness": ["Strength", "Cardio", "Agility", "Speed", "Endurance", "Flexibility", "Core", "HIIT", "Recovery"]
+  "Fitness": ["Strength", "Cardio", "Agility", "Speed", "Endurance", "Flexibility", "Core", "HIIT", "Recovery"],
 };
+
+const DEFAULT_CATEGORIES = SPORT_CATEGORIES["Field Hockey"];
 
 const AGE_GROUPS = ["U6", "U8", "U10", "U12", "U14", "U16", "U18", "U21", "Adult", "Senior", "All Ages"];
 const DIFFICULTY_LEVELS = ["Beginner", "Intermediate", "Advanced", "Elite"];
@@ -116,11 +118,9 @@ const CreateDrill = () => {
 
   // Auto-select category when profile loads (avoids stale closure issues)
   useEffect(() => {
-    if (profile?.sport && !duplicateData) {
-      const sportCats = SPORT_CATEGORIES[profile.sport];
-      if (sportCats?.length > 0) {
-        setFormData(prev => prev.category ? prev : { ...prev, category: sportCats[0] });
-      }
+    if (profile && !duplicateData) {
+      const sportCats = SPORT_CATEGORIES[profile.sport] || DEFAULT_CATEGORIES;
+      setFormData(prev => prev.category ? prev : { ...prev, category: sportCats[0] });
     }
   }, [profile]);
 
@@ -348,7 +348,7 @@ const CreateDrill = () => {
 
   if (!profile) return null;
 
-  const categories = SPORT_CATEGORIES[profile.sport] || [];
+  const categories = SPORT_CATEGORIES[profile.sport] || DEFAULT_CATEGORIES;
 
   // Live Preview Card Component
   const DrillPreviewCard = () => (
