@@ -654,29 +654,19 @@ const CreateDrill = () => {
                   <div className="space-y-6">
                     {/* Image Upload */}
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Label>Drill Drawing / Diagram</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
-                              <Info className="w-4 h-4" />
-                            </button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-72 text-sm" side="bottom" align="start" avoidCollisions={true}>
-                            <p className="font-semibold mb-2">Drawing Legend</p>
-                            <ul className="space-y-1.5 text-muted-foreground">
-                              <li><span className="font-medium text-foreground">○ Circle</span> — Player / attacker</li>
-                              <li><span className="font-medium text-foreground">× X mark</span> — Defender</li>
-                              <li><span className="font-medium text-foreground">△ Triangle / cone</span> — Cone / marker</li>
-                              <li><span className="font-medium text-foreground">→ Solid arrow</span> — Running path</li>
-                              <li><span className="font-medium text-foreground">--→ Dashed arrow</span> — Pass / ball path</li>
-                              <li><span className="font-medium text-foreground">~~→ Wavy arrow</span> — Dribble</li>
-                              <li><span className="font-medium text-foreground">⚡ Lightning arrow</span> — Shot on goal</li>
-                              <li><span className="font-medium text-foreground">□ Rectangle</span> — Goal / zone</li>
-                            </ul>
-                            <p className="mt-3 text-xs text-muted-foreground">Upload your hand-drawn sketch and AI will convert it into a clean, unified graphic.</p>
-                          </PopoverContent>
-                        </Popover>
+                      <Label className="mb-2 block">Drill Drawing / Diagram</Label>
+                      <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border text-xs">
+                        <p className="font-semibold mb-1.5 text-foreground">Drawing Legend</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
+                          <span><span className="font-medium text-foreground">○</span> Circle — Player</span>
+                          <span><span className="font-medium text-foreground">×</span> X mark — Defender</span>
+                          <span><span className="font-medium text-foreground">△</span> Triangle — Cone</span>
+                          <span><span className="font-medium text-foreground">→</span> Arrow — Run path</span>
+                          <span><span className="font-medium text-foreground">--→</span> Dashed — Pass</span>
+                          <span><span className="font-medium text-foreground">~~→</span> Wavy — Dribble</span>
+                          <span><span className="font-medium text-foreground">⚡→</span> Shot — Shot on goal</span>
+                          <span><span className="font-medium text-foreground">□</span> Rectangle — Goal</span>
+                        </div>
                       </div>
                       <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 hover:bg-muted/30 transition-all duration-200">
                         {imagePreview ? (
