@@ -95,6 +95,11 @@
     max-width: 100vw;
   }
 
+  /* Smaller placeholder text */
+  ::placeholder {
+    font-size: 0.85em;
+  }
+
   /* Prevent iOS zoom on input focus without changing desktop font sizes */
   @media (max-width: 768px) {
     input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
