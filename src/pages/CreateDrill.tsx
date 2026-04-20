@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Upload, Save, Sparkles, Video, Clock, Play, Info } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ArrowLeft, Upload, Save, Sparkles, Video, Clock, Play, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,6 +46,7 @@ const CreateDrill = () => {
   const [loading, setLoading] = useState(false);
   const [aiRedrawing, setAiRedrawing] = useState(false);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
   
   // Check if we're duplicating a drill
   const duplicateData = location.state?.drillData;
@@ -159,6 +159,61 @@ const CreateDrill = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Auto-crop drawn area from image and enforce white background
+  const cropToDrawnArea = (dataUrl: string): Promise<{ dataUrl: string; blob: Blob }> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d")!;
+        // White background first
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+        let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
+        for (let y = 0; y < canvas.height; y++) {
+          for (let x = 0; x < canvas.width; x++) {
+            const i = (y * canvas.width + x) * 4;
+            const r = data[i], g = data[i + 1], b = data[i + 2];
+            // Non-white pixel = drawn content
+            if (r < 230 || g < 230 || b < 230) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+
+        // Add padding, fallback to full image if nothing found
+        const pad = 40;
+        minX = Math.max(0, minX - pad);
+        minY = Math.max(0, minY - pad);
+        maxX = Math.min(canvas.width, maxX + pad);
+        maxY = Math.min(canvas.height, maxY + pad);
+        const w = maxX - minX || canvas.width;
+        const h = maxY - minY || canvas.height;
+
+        const cropCanvas = document.createElement("canvas");
+        cropCanvas.width = w;
+        cropCanvas.height = h;
+        const cropCtx = cropCanvas.getContext("2d")!;
+        cropCtx.fillStyle = "#FFFFFF";
+        cropCtx.fillRect(0, 0, w, h);
+        cropCtx.drawImage(canvas, minX, minY, w, h, 0, 0, w, h);
+
+        cropCanvas.toBlob((blob) => {
+          resolve({ dataUrl: cropCanvas.toDataURL("image/png"), blob: blob! });
+        }, "image/png");
+      };
+      img.src = dataUrl;
+    });
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -171,13 +226,12 @@ const CreateDrill = () => {
         return;
       }
 
-      // Store the file for upload
-      setImageFile(file);
-
-      // Create preview
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+      reader.onloadend = async () => {
+        const { dataUrl, blob } = await cropToDrawnArea(reader.result as string);
+        const croppedFile = new File([blob], file.name, { type: "image/png" });
+        setImageFile(croppedFile);
+        setImagePreview(dataUrl);
       };
       reader.readAsDataURL(file);
     }
@@ -220,13 +274,11 @@ const CreateDrill = () => {
       if (data?.error) throw new Error(data.error);
 
       if (data?.imageUrl) {
-        // Convert base64 to blob for storage
-        const response = await fetch(data.imageUrl);
-        const blob = await response.blob();
+        // Enforce white background on AI result
+        const { dataUrl, blob } = await cropToDrawnArea(data.imageUrl);
         const file = new File([blob], "ai-redrawn-drill.png", { type: "image/png" });
-        
         setImageFile(file);
-        setImagePreview(data.imageUrl);
+        setImagePreview(dataUrl);
         
         toast({
           title: "AI Redraw Complete!",
@@ -655,18 +707,27 @@ const CreateDrill = () => {
                     {/* Image Upload */}
                     <div>
                       <Label className="mb-2 block">Drill Drawing / Diagram</Label>
-                      <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border text-xs">
-                        <p className="font-semibold mb-1.5 text-foreground">Drawing Legend</p>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground">
-                          <span><span className="font-medium text-foreground">○</span> Circle — Player</span>
-                          <span><span className="font-medium text-foreground">×</span> X mark — Defender</span>
-                          <span><span className="font-medium text-foreground">△</span> Triangle — Cone</span>
-                          <span><span className="font-medium text-foreground">→</span> Arrow — Run path</span>
-                          <span><span className="font-medium text-foreground">--→</span> Dashed — Pass</span>
-                          <span><span className="font-medium text-foreground">~~→</span> Wavy — Dribble</span>
-                          <span><span className="font-medium text-foreground">⚡→</span> Shot — Shot on goal</span>
-                          <span><span className="font-medium text-foreground">□</span> Rectangle — Goal</span>
-                        </div>
+                      <div className="mb-3 rounded-lg border border-border text-xs overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => setLegendOpen(o => !o)}
+                          className="w-full flex items-center justify-between px-3 py-2 bg-muted/50 hover:bg-muted/70 transition-colors text-left"
+                        >
+                          <span className="font-semibold text-foreground">Drawing Legend</span>
+                          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${legendOpen ? "rotate-180" : ""}`} />
+                        </button>
+                        {legendOpen && (
+                          <div className="px-3 py-2 grid grid-cols-2 gap-x-4 gap-y-1 text-muted-foreground bg-muted/20">
+                            <span><span className="font-medium text-foreground">○</span> Circle — Player</span>
+                            <span><span className="font-medium text-foreground">×</span> X mark — Defender</span>
+                            <span><span className="font-medium text-foreground">△</span> Triangle — Cone</span>
+                            <span><span className="font-medium text-foreground">→</span> Arrow — Run path</span>
+                            <span><span className="font-medium text-foreground">--→</span> Dashed — Pass</span>
+                            <span><span className="font-medium text-foreground">~~→</span> Wavy — Dribble</span>
+                            <span><span className="font-medium text-foreground">⚡→</span> Shot on goal</span>
+                            <span><span className="font-medium text-foreground">□</span> Rectangle — Goal</span>
+                          </div>
+                        )}
                       </div>
                       <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 hover:bg-muted/30 transition-all duration-200">
                         {imagePreview ? (
