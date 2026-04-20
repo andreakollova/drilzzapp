@@ -714,21 +714,21 @@ const CreateDrill = () => {
                         ) : (
                           <div>
                             <Upload className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
-                            <Label
-                              htmlFor="image-upload"
-                              className="cursor-pointer"
-                            >
-                              <div className="space-y-1">
-                                <p className="font-medium">Upload Drill Diagram</p>
-                                <p className="text-sm text-muted-foreground">
-                                  PNG, JPG up to 5MB
-                                </p>
-                                <Button type="button" variant="outline" size="sm" className="mt-2" disabled={loading}>
-                                  <Upload className="w-4 h-4 mr-2" />
-                                  Choose File
-                                </Button>
-                              </div>
-                            </Label>
+                            <div className="space-y-1">
+                              <p className="font-medium">Upload Drill Diagram</p>
+                              <p className="text-sm text-muted-foreground">PNG, JPG up to 5MB</p>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                                disabled={loading}
+                                onClick={() => document.getElementById("image-upload")?.click()}
+                              >
+                                <Upload className="w-4 h-4 mr-2" />
+                                Choose File
+                              </Button>
+                            </div>
                             <Input
                               id="image-upload"
                               type="file"
@@ -768,21 +768,21 @@ const CreateDrill = () => {
                         ) : (
                           <div>
                             <Video className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
-                            <Label
-                              htmlFor="video-upload"
-                              className="cursor-pointer"
-                            >
-                              <div className="space-y-1">
-                                <p className="font-medium">Upload Video</p>
-                                <p className="text-sm text-muted-foreground">
-                                  MP4, MOV, WEBM up to 100MB
-                                </p>
-                                <Button type="button" variant="outline" size="sm" className="mt-2" disabled={loading}>
-                                  <Video className="w-4 h-4 mr-2" />
-                                  Choose File
-                                </Button>
-                              </div>
-                            </Label>
+                            <div className="space-y-1">
+                              <p className="font-medium">Upload Video</p>
+                              <p className="text-sm text-muted-foreground">MP4, MOV, WEBM up to 100MB</p>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                                disabled={loading}
+                                onClick={() => document.getElementById("video-upload")?.click()}
+                              >
+                                <Video className="w-4 h-4 mr-2" />
+                                Choose File
+                              </Button>
+                            </div>
                             <Input
                               id="video-upload"
                               type="file"
