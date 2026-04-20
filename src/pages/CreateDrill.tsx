@@ -110,17 +110,19 @@ const CreateDrill = () => {
       .select("*")
       .eq("id", user.id)
       .single();
-    
-    setProfile(profileData);
 
-    // Auto-select first category for user's sport
-    if (profileData?.sport && !duplicateData && !formData.category) {
-      const sportCats = SPORT_CATEGORIES[profileData.sport];
+    setProfile(profileData);
+  };
+
+  // Auto-select category when profile loads (avoids stale closure issues)
+  useEffect(() => {
+    if (profile?.sport && !duplicateData) {
+      const sportCats = SPORT_CATEGORIES[profile.sport];
       if (sportCats?.length > 0) {
-        setFormData(prev => ({ ...prev, category: sportCats[0] }));
+        setFormData(prev => prev.category ? prev : { ...prev, category: sportCats[0] });
       }
     }
-  };
+  }, [profile]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -731,7 +733,6 @@ const CreateDrill = () => {
                               id="image-upload"
                               type="file"
                               accept="image/*"
-                              capture="environment"
                               className="hidden"
                               onChange={handleImageUpload}
                               disabled={loading}
@@ -786,7 +787,6 @@ const CreateDrill = () => {
                               id="video-upload"
                               type="file"
                               accept="video/*"
-                              capture="environment"
                               className="hidden"
                               onChange={handleVideoUpload}
                               disabled={loading}
