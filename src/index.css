@@ -95,7 +95,7 @@
     max-width: 100vw;
   }
 
-  /* Input font size — small on desktop, 16px on mobile to prevent iOS zoom */
+  /* Input font size — consistent across all screen sizes */
   input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
   select,
   textarea {
@@ -104,14 +104,6 @@
 
   ::placeholder {
     font-size: 0.85em;
-  }
-
-  @media (max-width: 768px) {
-    input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
-    select,
-    textarea {
-      font-size: 14px !important;
-    }
   }
 
   h1, h2, h3, h4, h5, h6 {
